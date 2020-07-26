@@ -1,0 +1,107 @@
+2020-07-25
+
+1. 创建版本库
+    1.1创建文件夹        mkdir learngit
+    1.2创建一个文件      touch readme.txt
+    1.3编辑文件         vim readme.txt
+
+2.将文件添加到仓库
+    2.1告诉Git文件位置    git add readme.txt      (没有消息,就是最好的消息)
+    2.2将文件添加到仓库    git commit - m "worte a readme file" (成功提交后,1 file changed, 1 insertion(+))
+    2.3为什么需要两步,因为 commit 可以一次可以提交很多个文件
+    2.4Git命令必须在Git仓库的文件夹内部执行,(除了 git init命令)
+
+3.查看仓库状态
+    3.1Git是针对于文件的,当文件一旦被修改,就会被检测到   git status  readme.txt (但是只能看到被修改,却无法看到具体的细节)
+    3.2可以看到文件被修改的具体细节   git diff -- readme.txt
+
+4.查看历史记录
+    4.1可以查看Git历史提交记录    git log     (全量信息)
+    4.2可以查看Git提交记录       git log --pretty=oneline
+    4.3d015d515a15c69611898044bdf1241f3e530a397 是 commit id(版本号id,可以防止版本冲突)
+
+5.版本回退
+    5.1可以回退到上个版本    git reset --hard HEAD^/ git reset --hard 09e08b0 (HEAD,代表当前版本,即最新版本)  (但是如果回退到之前的版本,则在 git log中不再显示,如果想要回去则 git reset --hard d015d51)
+    5.2可以回退到上上个版本   git reset --hard HEAD^^/ git reset --hard be306de (一个^代表回退的版本)
+    5.3可以回退到前20个版本  git reset --hard HEAD-20
+    5.4如果电脑关机了,在第二天在 git log 中找不到 commit id，可以使用    git reflog
+
+6.工作区和暂存区
+    6.1Working Directory 就是你在电脑中可以看到的目录,如 learngit
+    6.2Repository 版本库 工作区有一个版本库,是一个隐藏目录 .git 在linux/mac os中需要使用 ls -a
+    6.3Stage    暂存区 就是在版本库中, 版本库中还包括 Git自动创建的第一个分支 master,以及一个指向 master的指针叫 HEAD
+    6.4对应到我们提交代码的两步 git add 就是将文件提交到 暂存区中.  git commit 就是往 master 分支上提交
+
+7.管理修改
+    7.1第一次修改后，添加到 暂存区,不提交. 再次修改,然后提交,提交的是第一次在暂存区的文件.虽然文件是第二次的,但是使用 git status 时还是显示第二次的未提交
+
+8.撤销修改
+    8.1如果只是修改,还未提交到暂存区      可以手动修改,删除修改的数据. / 可以 reset 上一个版本
+        8.1.2也可以使用    git restore readme.txt /    git checkout -- readme.txt
+    8.3如果已经提交到了暂存区 可以使用 git restore --staged readme.txt / git reset HEAD readme.txt 将其从缓存区去除,然后再 8.1
+    8.4如果不但提交到暂存区,而且提交到了版本库 可以使用 git reset --hard 6bcbf3e      (前提是没有推送到远程仓库)
+
+9.删除文件
+    9.1一个文件已经提交到版本库了    在Linxu上删除了
+    9.2这时使用 git status 则会显示工作区和版本库数据不一致了
+    9.3如果确实是要删除则    git rm del.txt
+    9.4如果不是则    git checkout -- del.txt / git restore del.txt ,然后再次提交  git commit -m "remove del.txt"
+
+10.远程仓库
+    10.1将本地仓库和远程仓库关联 git remote add origin git@github.com:Mbm7280/learngit-.git
+    10.2将本地仓库推送到远程仓库 git push -u origin master
+
+11.从远程仓库克隆
+    11.1克隆 git clone git@github.com:Mbm7280/gitskils.git
+
+12.创建分支
+    12.1第一种方法:  git checkout -b dev /   git switch -c dev   (创建并切换分支)
+    12.2第二种方法:  创建一个新的分支    git branch dev      切换到新创建的分支 git checkout dev
+
+13.分支合并
+    13.1git merge dev
+
+14.删除分支
+    14.1git branch -d dev
+    14.2强制删除    git branch -D dev (如果分支还未合并,需要删除则可以使用此命令)
+
+15.切换分支
+    15.1    git checkout dev
+    15.2    git switch dev
+
+16.查看分支
+    16.1    git branch
+
+17.文件冲突
+    17.1    双方都修改了同一个文件,且都提交了.
+    17.2    爆冲突时,无法合并. 且使用 git status 也可以查看
+    17.3    必须解决冲突,然后再次提交和删除分支
+
+18.在分支合并的时候,Git 默认采用的是 FAST FORWARD 机制，在合并完后,删除和并的分支,都会删除该分支的信息
+    18.1    git merge --no-ff -m"merge with no-ff" dev  (禁用 FAST FORWARD,会自动commit 一次)
+    18.2    git log 可以查看合并信息
+
+19.Bug分支
+    19.1    你正在dev分支上开发,开发并未完成,但此时接到通知,master分支上有一个bug需要处理,
+            此时可以使用 git stash 保存 dev当前开发进度,
+            然后切换到 master 分支，切出去一个分支 git switch -c bug-101
+            然后在 bug-101 分支修改,修改好后,提交.
+            再切换到 master 分支, 然后 git merge bug-101
+            再删除 bug-101 分支, git branch -d bug-101
+            此时回到 dev 分支, git switch dev
+            使用 git stash list,可以查看之前保存的工作现场,
+            使用 git stash apply 恢复,(但是工作现场恢复后，stash 内容并不删除,如果想要删除 git stash drop)
+            使用 git stash pop    恢复的同时删除 stash 内容
+
+20.多人协作
+    20.1从远程仓库克隆时, Git自动把本地的master 和 远程的master分支对应了起来,并且远程仓库的默认名称时 origx`in
+    20.2    查看远程仓库的信息   git remote
+    20.3                      git remote -v 显示的信息更详细
+    20.4推送分支    git push origin master / git push origin dev (远程仓库的默认名称 要推送到的分支名称)
+    20.5抓取分支    默认情况下,只能看到 master分支,
+    20.6如果要在 dev 分支上开发, 必须要创建远程 origin的dev分支 到本地    git checkout -b dev origin/dev
+    20.7如果推送失败则     先 Pull 拉取下来,再推送
+
+
+
+
