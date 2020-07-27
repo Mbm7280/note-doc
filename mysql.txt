@@ -1,0 +1,71 @@
+
+# TODO  前面待合并
+
+# 日期时间函数
+
+# curdate
+select curdate();
+
+# curtime
+select curtime();
+
+# now
+select now();
+
+# unix_timestamp
+select unix_timestamp();
+
+# from_unixtime 和上一条命令为互逆操作
+select from_unixtime(1595851280);
+
+# week
+select week(now());
+select week('2020-07-27');
+
+# year
+select year('2020-05-01');
+
+# hour
+select hour('2020-05-01 18:20:20');
+
+# minute
+select minute('2020-05-05 19:30:20');
+
+# monthname
+select monthname('2020-08-03');
+
+# date_add
+select date_add(curtime(),interval  20 day );
+
+# datediff
+select datediff(curtime(),'2020-07-30');
+
+# 流程函数
+# if
+select if(cms_help.id > 1,'high','low') from mall.cms_help;
+
+# ifnull
+select ifnull(cms_help.id,0) from mall.cms_help;
+
+# case when
+select case when cms_help.id <= 2000 then 'low' else 'high' end from mall.cms_help;
+
+# 其他常用函数
+
+# database
+select database();
+
+# version
+select version();
+
+# user
+select user();
+
+# inet_aton
+select inet_ntoa();
+
+# password
+select password("aaaa");
+
+# md5
+select md5("aaaa");
